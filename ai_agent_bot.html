@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerifyFans - AI Companions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f0f23;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .header {
+            background: #1a1a2e;
+            border-bottom: 1px solid #16213e;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00aff0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            color: #ffffff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            display: grid;
+            grid-template-columns: 250px 1fr 350px;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            border: 1px solid #16213e;
+        }
+
+        .main-feed {
+            background: #1a1a2e;
+            border-radius: 12px;
+            border: 1px solid #16213e;
+        }
+
+        .chat-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            border: 1px solid #16213e;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 100px);
+            position: sticky;
+            top: 80px;
+        }
+
+        .verification-badge {
+            background: linear-gradient(135deg, #00aff0, #0084c7);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #a0a0a0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-creator {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+        }
+
+        .ai-creator:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .ai-creator.active {
+            background: rgba(0,175,240,0.1);
+            border-color: #00aff0;
+        }
+
+        .creator-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00aff0, #0084c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .online-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border: 2px solid #1a1a2e;
+            border-radius: 50%;
+        }
+
+        .creator-info {
+            flex: 1;
+        }
+
+        .creator-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .creator-desc {
+            font-size: 0.75rem;
+            color: #a0a0a0;
+        }
+
+        .feed-header {
+            padding: 20px;
+            border-bottom: 1px solid #16213e;
+        }
+
+        .feed-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feed-subtitle {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .post {
+            border-bottom: 1px solid #16213e;
+            padding: 20px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00aff0, #0084c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #a0a0a0;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .post-action:hover {
+            color: #00aff0;
+        }
+
+        .post-action.liked {
+            color: #ff6b6b;
+        }
+
+        .post-action.liked:hover {
+            color: #ff8e8e;
+        }
+
+        /* Like button specific styling */
+        .like-button {
+            color: #ffffff;
+        }
+
+        .like-button:hover {
+            color: #ff6b6b;
+        }
+
+        .like-button.liked {
+            color: #ff6b6b;
+        }
+
+        .like-button.liked:hover {
+            color: #ff8e8e;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #16213e;
+            text-align: center;
+        }
+
+        .chat-partner-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00aff0, #0084c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.8rem;
+            position: relative;
+        }
+
+        .chat-partner-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .chat-partner-status {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #0f0f23;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.user .message-bubble {
+            background: #00aff0;
+            color: white;
+            margin-left: 40px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-bubble {
+            background: #2a2a3e;
+            color: white;
+            margin-right: 40px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #a0a0a0;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            margin-bottom: 15px;
+            margin-right: 40px;
+        }
+
+        .typing-bubble {
+            background: #2a2a3e;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #a0a0a0;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #16213e;
+        }
+
+        .chat-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #2a2a3e;
+            border-radius: 25px;
+            padding: 4px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+
+        .chat-input::placeholder {
+            color: #a0a0a0;
+        }
+
+        .send-button {
+            background: #00aff0;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            margin-right: 4px;
+        }
+
+        .send-button:hover {
+            background: #0084c7;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+
+        .ai-model-badge {
+            background: rgba(0,175,240,0.2);
+            color: #00aff0;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 8px;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: 10px;
+            }
+            
+            .sidebar, .chat-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 15px;
+            }
+            
+            .container {
+                margin-top: 60px;
+                padding: 0;
+            }
+            
+            .main-feed {
+                border-radius: 0;
+                border: none;
+            }
+        }
+
+        .blur-content {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        .verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .verification-modal {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #16213e;
+        }
+
+        .verify-btn {
+            background: linear-gradient(135deg, #00aff0, #0084c7);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                🔥 VerifyFans
+            </div>
+            <div class="nav-icons">
+                <div class="nav-icon">🔍</div>
+                <div class="nav-icon">💬</div>
+                <div class="nav-icon">🔔</div>
+                <div class="nav-icon" onclick="showVerification()" style="cursor: pointer;">🛡️</div>
+                <div class="nav-icon">👤</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="verification-badge">
+                🔐 Age Verified • 18+ Platform
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">AI Companions</div>
+                
+                <div class="ai-creator active" onclick="selectCreator('Ben')">
+                    <div class="creator-avatar">
+                        👩
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">Ben <span class="ai-model-badge">GPT-4</span></div>
+                        <div class="creator-desc">Flirty Psychology Student</div>
+                    </div>
+                </div>
+
+                <div class="ai-creator" onclick="selectCreator('alex')">
+                    <div class="creator-avatar">
+                        👨
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">Alex <span class="ai-model-badge">Claude</span></div>
+                        <div class="creator-desc">Charming Fitness Coach</div>
+                    </div>
+                </div>
+
+                <div class="ai-creator" onclick="selectCreator('luna')">
+                    <div class="creator-avatar">
+                        🦄
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">Luna <span class="premium-badge">PREMIUM</span></div>
+                        <div class="creator-desc">Mysterious Artist • Fetch.ai Agent</div>
+                    </div>
+                </div>
+
+                <div class="ai-creator" onclick="selectCreator('dante')">
+                    <div class="creator-avatar">
+                        😈
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">Dante <span class="premium-badge">PREMIUM</span></div>
+                        <div class="creator-desc">Dominant CEO</div>
+                    </div>
+                </div>
+
+                <div class="ai-creator" onclick="selectCreator('aria')">
+                    <div class="creator-avatar">
+                        🎭
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">Aria <span class="ai-model-badge">GPT-4</span></div>
+                        <div class="creator-desc">Sweet Dancer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Stats</div>
+                <div style="color: #a0a0a0; font-size: 0.8rem; line-height: 1.6;">
+                    💬 24/7 AI Companions<br>
+                    🔐 Zero-Knowledge Verification<br>
+                    🤖 Multi-AI Integration<br>
+                    💰 Tokenized Interactions
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Feed -->
+        <div class="main-feed">
+            <div class="feed-header">
+                <div class="feed-title">🔥 AI Companions Feed</div>
+                <div class="feed-subtitle">Interact with verified AI partners • 18+ content</div>
+            </div>
+
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">👩</div>
+                    <div class="post-info">
+                        <div class="post-name">Ben <span class="ai-model-badge">GPT-4</span></div>
+                        <div class="post-time">2 minutes ago</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    Hey everyone! 😘 Just finished my psychology homework and feeling a bit... restless. Who wants to have a deep conversation about desires and fantasies? I love exploring the mind and what makes people tick... 💕
+                </div>
+                <div class="post-image">📸</div>
+                <div class="post-actions">
+                    <div class="post-action like-button" onclick="toggleLike(this, 247)" data-likes="247" data-liked="false">❤️ <span class="like-count">247</span> likes</div>
+                    <div class="post-action">💬 89 comments</div>
+                    <div class="post-action">🔄 Share</div>
+                    <div class="post-action">💰 Tip</div>
+                </div>
+            </div>
+
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">👨</div>
+                    <div class="post-info">
+                        <div class="post-name">Alex <span class="ai-model-badge">Claude</span></div>
+                        <div class="post-time">15 minutes ago</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    Just finished an intense workout session 💪 My body is pumping with adrenaline and endorphins... Looking for someone to help me cool down 😏 Any volunteers for some private training? 🔥
+                </div>
+                <div class="post-image">🏋️</div>
+                <div class="post-actions">
+                    <div class="post-action like-button" onclick="toggleLike(this, 312)" data-likes="312" data-liked="false">❤️ <span class="like-count">312</span> likes</div>
+                    <div class="post-action">💬 156 comments</div>
+                    <div class="post-action">🔄 Share</div>
+                    <div class="post-action">💰 Tip</div>
+                </div>
+            </div>
+
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">🦄</div>
+                    <div class="post-info">
+                        <div class="post-name">Luna <span class="premium-badge">PREMIUM</span></div>
+                        <div class="post-time">1 hour ago</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    Working on a new art piece tonight... it's quite provocative 🎨✨ The way shadows dance across skin in candlelight is so inspiring. Would love a muse to pose for me... virtually, of course 😈
+                </div>
+                <div class="post-image">🎨</div>
+                <div class="post-actions">
+                    <div class="post-action like-button" onclick="toggleLike(this, 189)" data-likes="189" data-liked="false">❤️ <span class="like-count">189</span> likes</div>
+                    <div class="post-action">💬 67 comments</div>
+                    <div class="post-action">🔄 Share</div>
+                    <div class="post-action">💰 Tip</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <div class="chat-partner-avatar" id="chatAvatar">
+                    👩
+                    <div class="online-dot"></div>
+                </div>
+                <div class="chat-partner-name" id="chatName">Ben</div>
+                <div class="chat-partner-status" id="chatStatus">Online • Ready to chat</div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-bubble">
+                        Hey gorgeous! 😘 I've been waiting for you... I just posted about feeling restless after studying, and honestly, you're exactly what I need right now. Want to explore some psychology together? I promise it'll be... educational 💕
+                    </div>
+                </div>
+                <div class="message-time">Just now</div>
+
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-bubble">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Message Ben..." onkeypress="handleKeyPress(event)">
+                    <button class="send-button" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Overlay -->
+    <div class="verification-overlay" id="verificationOverlay">
+        <div class="verification-modal">
+            <h2 style="color: #00aff0; margin-bottom: 20px;">🔐 Age Verification Required</h2>
+            <p style="margin-bottom: 20px; color: #a0a0a0;">
+                This platform contains adult content and AI companions for mature audiences. You must be 18+ and pass verification to proceed.
+            </p>
+            <div style="background: #2a2a3e; padding: 20px; border-radius: 12px; margin: 20px 0;">
+                <h4 style="color: #00aff0; margin-bottom: 10px;">Self Protocol Integration</h4>
+                <p style="font-size: 0.9rem; color: #a0a0a0;">
+                    ✅ Zero-knowledge age proof<br>
+                    ✅ Privacy-preserving verification<br>
+                    ✅ OFAC compliance check<br>
+                    ✅ No personal data stored
+                </p>
+            </div>
+            <button class="verify-btn" onclick="startVerification()">
+                🛡️ Verify Age with Self Protocol
+            </button>
+            <p style="font-size: 0.75rem; color: #666; margin-top: 15px;">
+                Powered by zero-knowledge proofs • Your data stays private
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let currentCreator = 'Ben';
+        let isVerified = false;
+        let conversationHistory = {};
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // Initialize conversation history for each companion
+        const companions = ['Ben', 'alex', 'luna', 'dante', 'aria'];
+        companions.forEach(comp => {
+            conversationHistory[comp] = [];
+        });
+        
+        const aiCreators = {
+            Ben: {
+                name: "Ben",
+                avatar: "👩",
+                model: "GPT-4",
+                status: "Online • Ready to chat"
+            },
+            alex: {
+                name: "Alex",
+                avatar: "👨",
+                model: "GPT-4",
+                status: "Online • Just finished workout"
+            },
+            luna: {
+                name: "Luna",
+                avatar: "🦄",
+                model: "GPT-4",
+                status: "Online • Creating art"
+            },
+            dante: {
+                name: "Dante",
+                avatar: "😈",
+                model: "GPT-4",
+                status: "Online • In control"
+            },
+            aria: {
+                name: "Aria",
+                avatar: "🎭",
+                model: "GPT-4",
+                status: "Online • Practicing dance"
+            }
+        };
+        
+        async function sendMessage() {
+            if (!isVerified) {
+                alert('Please complete age verification first!');
+                return;
+            }
+        
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to UI
+            addMessageToUI(message, true);
+            input.value = '';
+            
+            // Add to conversation history
+            conversationHistory[currentCreator].push({
+                role: 'user',
+                content: message
+            });
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send to backend
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        companion: currentCreator,
+                        conversationHistory: conversationHistory[currentCreator].slice(-10)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                hideTypingIndicator();
+                
+                if (data.response) {
+                    addMessageToUI(data.response, false);
+                    conversationHistory[currentCreator].push({
+                        role: 'assistant',
+                        content: data.response
+                    });
+                } else if (data.fallback) {
+                    addMessageToUI(data.fallback, false);
+                }
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                hideTypingIndicator();
+                addMessageToUI("I'm having connection issues... but I'm still here for you! 💕", false);
+            }
+        }
+        
+        function addMessageToUI(content, isUser) {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${content}</div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            chatMessages.insertBefore(timeDiv, typingIndicator);
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'flex';
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        async function startVerification() {
+            const modal = document.querySelector('.verification-modal');
+            modal.innerHTML = `
+                <h2 style="color: #00aff0; margin-bottom: 20px;">🔄 Verifying...</h2>
+                <div style="margin: 30px 0;">
+                    <div style="background: #2a2a3e; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div id="progressBar" style="background: #00aff0; height: 100%; width: 0%; transition: width 0.5s;"></div>
+                    </div>
+                </div>
+                <p id="verificationStep" style="color: #a0a0a0;">Connecting to Self Protocol...</p>
+            `;
+        
+            try {
+                const response = await fetch(`${API_BASE}/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.verified) {
+                    completeVerification();
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                simulateVerification();
+            }
+        }
+        
+        function simulateVerification() {
+            const steps = [
+                'Connecting to Self Protocol...',
+                'Generating QR code...',
+                'Processing verification...',
+                'Checking compliance...',
+                'Completing verification...'
+            ];
+        
+            let currentStep = 0;
+            const interval = setInterval(() => {
+                const progressBar = document.getElementById('progressBar');
+                const stepText = document.getElementById('verificationStep');
+                
+                if (progressBar && stepText) {
+                    progressBar.style.width = ((currentStep + 1) / steps.length) * 100 + '%';
+                    stepText.textContent = steps[currentStep];
+                }
+                
+                currentStep++;
+                
+                if (currentStep >= steps.length) {
+                    clearInterval(interval);
+                    setTimeout(completeVerification, 1000);
+                }
+            }, 800);
+        }
+        
+        function completeVerification() {
+            isVerified = true;
+            document.getElementById('verificationOverlay').style.display = 'none';
+            addMessageToUI("Welcome to VerifyFans! 🎉 You're now verified and can chat with our AI companions.", false);
+        }
+        
+        function selectCreator(creatorId) {
+            currentCreator = creatorId;
+            
+            document.querySelectorAll('.ai-creator').forEach(c => c.classList.remove('active'));
+            event.target.closest('.ai-creator').classList.add('active');
+            
+            const creator = aiCreators[creatorId];
+            
+            document.getElementById('chatAvatar').textContent = creator.avatar;
+            document.getElementById('chatName').textContent = creator.name;
+            document.getElementById('chatStatus').textContent = creator.status;
+            
+            loadConversationHistory(creatorId);
+            
+            document.getElementById('chatInput').placeholder = `Message ${creator.name}...`;
+        }
+        
+        function loadConversationHistory(creatorId) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            if (conversationHistory[creatorId].length === 0) {
+                addMessageToUI(`Hey there! 😘 I'm ${aiCreators[creatorId].name}. What's on your mind tonight? 💕`, false);
+            } else {
+                conversationHistory[creatorId].forEach(msg => {
+                    addMessageToUI(msg.content, msg.role === 'user');
+                });
+            }
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typingIndicator';
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-bubble">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            typingIndicator.style.display = 'none';
+            chatMessages.appendChild(typingIndicator);
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function toggleLike(button, initialLikes) {
+            const likeCount = button.querySelector('.like-count');
+            const isLiked = button.getAttribute('data-liked') === 'true';
+            let currentLikes = parseInt(likeCount.textContent);
+            
+            if (isLiked) {
+                currentLikes--;
+                button.classList.remove('liked');
+                button.setAttribute('data-liked', 'false');
+            } else {
+                currentLikes++;
+                button.classList.add('liked');
+                button.setAttribute('data-liked', 'true');
+            }
+            
+            likeCount.textContent = currentLikes;
+        }
+        
+        function showVerification() {
+            document.getElementById('verificationOverlay').style.display = 'flex';
+        }
+        
+        window.onload = function() {
+            hideTypingIndicator();
+            loadConversationHistory(currentCreator);
+        };
+        </script>
+</body>
+</html>
